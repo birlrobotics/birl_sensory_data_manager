@@ -1,0 +1,18 @@
+actions: []
+authors: ''
+brief: ''
+bugtracker: ''
+depends:
+- std_msgs
+- rospy
+- roscpp
+- catkin
+- python-catkin-pkg
+description: The birl_sensory_data_manager package
+license: TODO
+maintainers: sklaw <sklaw@todo.todo>
+msgs: []
+package_type: package
+repo_url: ''
+srvs: []
+url: ''

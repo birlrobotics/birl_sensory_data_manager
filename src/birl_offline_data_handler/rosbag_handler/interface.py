@@ -24,10 +24,7 @@ def convert_rosbag_to_csv(path_to_rosbag):
         None
 
     Raises:
-        We don't intentionally raise any exception. If you catch some, it may be thrown by `rosbag`_.
-
-    .. _rosbag:
-        http://docs.ros.org/api/rosbag/html/python/
+        InvalidRosbagPath
 
     """
 

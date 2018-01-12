@@ -1,5 +1,6 @@
 import core
 import glob, os
+import tuned_rosbag_to_csv
 
 
 class InvalidRosbagPath(Exception): pass
@@ -40,3 +41,23 @@ def convert_rosbag_to_csv(path_to_rosbag):
     else:
         raise InvalidRosbagPath()
     
+    class Bunch:
+        def __init__(self, **kwds):
+            self.__dict__.update(kwds)
+    for bag in list_of_bag:
+        fname = os.path.basename(bag)[:-4]     # strip .bag
+        bag_dir = os.path.join(
+            os.path.dirname(bag),
+            fname,
+        )
+        if os.path.isdir(bag_dir) is False:
+            os.makedirs(bag_dir)
+        output_file_format = os.path.join(bag_dir, "%t.csv")
+
+        fake_options = Bunch(
+            start_time = None,
+            end_time = None,
+            topic_names = None, 
+            output_file_format=str(output_file_format),
+            header = True)
+        tuned_rosbag_to_csv.bag_to_csv(fake_options, os.path.abspath(bag))

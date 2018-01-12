@@ -57,6 +57,7 @@ if __name__ == '__main__':
         logger.error("failed.")
     
 
+    logger.info("Test converting rosbag folder.")
     test_dir = setup_test_dir()
     clean_test_flag = True
     ri.convert_rosbag_to_csv(test_dir)

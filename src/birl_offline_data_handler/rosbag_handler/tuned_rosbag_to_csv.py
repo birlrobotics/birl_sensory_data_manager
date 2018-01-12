@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys
-from PyQt4 import QtGui
 import rosbag
 import rospy
 import subprocess
 from optparse import OptionParser
 from datetime import datetime
+import os
 
 def message_to_csv(stream, msg, flatten=False):
     """
@@ -63,7 +63,12 @@ def bag_to_csv(options, fname):
         if streamdict.has_key(topic):
             stream = streamdict[topic]
         else:
-            stream = open(format_csv_filename(options.output_file_format, fname[:-4]+topic.replace('/','-')),'w')
+            stream = open(
+                format_csv_filename(
+                    options.output_file_format, 
+                    os.path.basename(fname)[:-4]+topic.replace('/','-')
+                ),
+                'w')
             streamdict[topic] = stream
             # header
             if options.header:

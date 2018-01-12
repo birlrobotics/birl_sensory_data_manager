@@ -35,7 +35,7 @@ def process_bag_to_csv(base_folder, topic_names):
         fake_options = Bunch(
             start_time = None,
             end_time = None,
-            topic_names = topic_names, 
+            topic_names = None, 
             output_file_format="%t.csv",
             header = True)
 

@@ -41,7 +41,7 @@ def same_dir_test(dir1, dir2):
     
 
 if __name__ == '__main__':
-    import birl_offline_data_handler.rosbag_handler.interface as ri
+    from birl_offline_data_handler.rosbag_handler import RosbagHandler, InvalidRosbagPath
     score_dir = os.path.join(
         '..',
         'test_data_set',
@@ -50,8 +50,8 @@ if __name__ == '__main__':
 
     logger.info("Test invalid rosbag input.")
     try:
-        ri.convert_rosbag_to_csv("thispathdoesnotexist")
-    except ri.InvalidRosbagPath as e:
+        o = RosbagHandler("thispathdoesnotexist")
+    except InvalidRosbagPath as e:
         logger.info("passed.")
     else:
         logger.error("failed.")
@@ -60,7 +60,8 @@ if __name__ == '__main__':
     logger.info("Test converting rosbag folder.")
     test_dir = setup_test_dir()
     clean_test_flag = True
-    ri.convert_rosbag_to_csv(test_dir)
+    o = RosbagHandler(test_dir)
+    o.convert_to_csv()
     try:
         assert same_dir_test(test_dir, score_dir)
     except AssertionError as e:
@@ -82,7 +83,8 @@ if __name__ == '__main__':
         )
     )
     for bag_file in list_of_bag_file:
-        ri.convert_rosbag_to_csv(bag_file) 
+        o = RosbagHandler(bag_file)
+        o.convert_to_csv()
         fname = os.path.basename(bag_file)[:-4]     # strip .bag
 
         test_bag_dir = os.path.join(test_dir, fname)

@@ -47,17 +47,13 @@ def format_csv_filename(form, topic_name):
     ret = form.replace('%t', topic_name)
     return ret
  
-def bag_to_csv(options, fname):
+def bag_to_csv(output_file_format, fname):
     bag = rosbag.Bag(fname)
     streamdict= dict()
     stime = None
-    if options.start_time:
-        stime = rospy.Time(options.start_time)
     etime = None
-    if options.end_time:
-        etime = rospy.Time(options.end_time)
 
-    for topic, msg, time in bag.read_messages(topics=options.topic_names,
+    for topic, msg, time in bag.read_messages(topics=None,
                                               start_time=stime,
                                               end_time=etime):
         if streamdict.has_key(topic):
@@ -65,19 +61,17 @@ def bag_to_csv(options, fname):
         else:
             stream = open(
                 format_csv_filename(
-                    options.output_file_format, 
+                    output_file_format, 
                     os.path.basename(fname)[:-4]+topic.replace('/','-')
                 ),
                 'w')
             streamdict[topic] = stream
-            # header
-            if options.header:
-                stream.write("time")
-                message_type_to_csv(stream, msg)
-                stream.write('\n')
+            stream.write("time")
+            message_type_to_csv(stream, msg)
+            stream.write('\n')
 
         stream.write(datetime.fromtimestamp(time.to_time()).strftime('%Y/%m/%d/%H:%M:%S.%f'))
-        message_to_csv(stream, msg, flatten=not options.header)
+        message_to_csv(stream, msg, flatten=False)
         stream.write('\n')
     [s.close for s in streamdict.values()]
 

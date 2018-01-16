@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import sys
 import rosbag
-import rospy
 import subprocess
 from optparse import OptionParser
 from datetime import datetime

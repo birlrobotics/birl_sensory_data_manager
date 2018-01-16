@@ -8,6 +8,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
+dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
+
 def setup_test_dir():
     test_dir = os.path.join(
         tempfile.gettempdir(), 
@@ -15,6 +17,7 @@ def setup_test_dir():
     )
     shutil.copytree(
         os.path.join(
+            dir_of_this_script,
             '..',
             'test_data_set',
             'raw_data_for_test',
@@ -24,16 +27,24 @@ def setup_test_dir():
     return test_dir
 
 def _same_dir_test(dcmp):
+    ret = True
     if len(dcmp.left_only) != 0\
         or len(dcmp.right_only) != 0\
         or len(dcmp.diff_files) != 0:
-        return False
+
+        if len(dcmp.left_only) != 0:
+            logger.error("dcmp.left_only: %s"%dcmp.left_only)
+        if len(dcmp.right_only) != 0:
+            logger.error("dcmp.right_only: %s"%dcmp.right_only)
+        if len(dcmp.diff_files) != 0:
+            logger.error("dcmp.diff_files: %s"%dcmp.diff_files)
+        ret = False
     
     for sub_dcmp in dcmp.subdirs.values():
         if _same_dir_test(sub_dcmp) == False:
-            return False
+            ret = False
 
-    return True 
+    return ret
 
 def same_dir_test(dir1, dir2):
     dcmp = filecmp.dircmp(dir1, dir2)
@@ -43,6 +54,7 @@ def same_dir_test(dir1, dir2):
 if __name__ == '__main__':
     from birl_offline_data_handler.rosbag_handler import RosbagHandler, InvalidRosbagPath
     score_dir = os.path.join(
+        dir_of_this_script,
         '..',
         'test_data_set',
         'good_processed_data',

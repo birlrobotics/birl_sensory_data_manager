@@ -1,67 +1,112 @@
 import glob, os
+import rosbag
+import pandas as pd
 from _rosbag_handler_impl.tuned_rosbag_to_csv import bag_to_csv
 
 class InvalidRosbagPath(Exception): pass
+class TopicNotFoundInRosbag(Exception): pass
 
 class RosbagHandler(object):
+    """Brief RosbagHandler
+
+    Detailed RosbagHandler
+
+    Attributes:
+    """
+
+
     def __init__(self, path_to_rosbag):
+        """Brief init.
+
+        Detailed init.
+
+        Args:
+            path_to_rosbag: A path to a rosbag file or 
+                a folder of rosbag files. In the latter 
+                case, all rosbag files in that folder
+                will be processed. 
+
+        Raises:
+            InvalidRosbagPath
+        """
+
         if os.path.isdir(path_to_rosbag):
-            list_of_bag = glob.glob(
+            _list_of_bag_paths = glob.glob(
                 os.path.join(
                     path_to_rosbag,
                     "*.bag",
                 )
             )
         elif os.path.isfile(path_to_rosbag):
-            list_of_bag = [path_to_rosbag]
+            _list_of_bag_paths = [path_to_rosbag]
         else:
             raise InvalidRosbagPath()
         self.path_to_rosbag = path_to_rosbag
-        self.list_of_bag = list_of_bag
-        pass
+        self._list_of_bag_paths = _list_of_bag_paths
 
-    def convert_to_csv(self):
-        """Convert ROS bag file(s) to csv file(s).
+    def _get_csv_path(self, bag_path, topic_name):
 
-        If the ROS bag contains more than one ROS topics, 
-        for each topic, one csv will be output. The 
-        output csv(s) will be stored in a folder of the 
-        same name and in the same folder as the original 
-        ROS bag. 
+        # Strip .bag extention
+        fname = os.path.basename(bag_path)[:-4]
+
+        return os.path.join(
+            os.path.dirname(bag_path),
+            fname,
+            fname+topic_name.replace('/','-')+'.csv'
+        )
+
+    def get_csv_of_a_topic(
+        self, 
+        topic_name, 
+        use_cached_result=True,
+    ):
+        """Brief get_csv_of_a_topic.
+        
+        Detailed get_csv_of_a_topic.
 
         Args:
-            path_to_rosbag: A path to a ROS bag file or 
-                a folder of ROS bag files. In the latter 
-                case, all ROS bag files in that folder
-                will be processed. 
+            topic_name: topic_name. 
+            use_cached_result: use_cached_result.
 
-        Returns:
-            None
+        Retunrs:
+            A list.
 
         Raises:
-            InvalidRosbagPath
-
+            TopicNotFoundInRosbag
         """
+        ret = []
+        
+        _list_of_bag_paths = self._list_of_bag_paths 
 
-        list_of_bag = self.list_of_bag 
+        for bag_path in _list_of_bag_paths:
+            bag = rosbag.Bag(bag_path)
+            available_topics = \
+                bag.get_type_and_topic_info().topics.keys()
+            if topic_name not in available_topics:
+                raise TopicNotFoundInRosbag()
 
-        for bag in list_of_bag:
-            fname = os.path.basename(bag)[:-4]     # strip .bag
-            bag_dir = os.path.join(
-                os.path.dirname(bag),
-                fname,
-            )
-            if os.path.isdir(bag_dir) is False:
-                os.makedirs(bag_dir)
-            output_file_format = os.path.join(bag_dir, "%t.csv")
+            csv_path = self._get_csv_path(
+                bag_path,
+                topic_name,
+            ) 
 
-            bag_to_csv(
-                str(output_file_format),
-                os.path.abspath(bag)
-            )
-        pass
+            if use_cached_result and os.path.isfile(csv_path):
+                # Approved to use cache and cached csv 
+                # is found.
+                pass
+            else:
+                # Generate a csv for this topic and stored
+                # it at csv_path.
+                try:
+                    os.makedirs(os.path.dirname(csv_path))
+                except OSError as exc: # Guard against race condition
+                    if exc.errno != errno.EEXIST:
+                        raise 
+                bag_to_csv(bag, csv_path, topic_name)
 
-    def load_csv(self):
-        pass
 
+            # Read the csv into pandas Dataframe and 
+            # return it
+            ret.append(pd.read_csv(csv_path, sep=','))
 
+        return ret

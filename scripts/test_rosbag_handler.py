@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from birl_offline_data_handler.rosbag_handler import RosbagHandler, InvalidRosbagPath, TopicNotFoundInRosbag
 import glob, os, shutil
 from shutil import rmtree
 import tempfile
@@ -52,7 +52,6 @@ def same_dir_test(dir1, dir2):
     
 
 if __name__ == '__main__':
-    from birl_offline_data_handler.rosbag_handler import RosbagHandler, InvalidRosbagPath
     score_dir = os.path.join(
         dir_of_this_script,
         '..',
@@ -69,11 +68,20 @@ if __name__ == '__main__':
         logger.error("failed.")
     
 
-    logger.info("Test converting rosbag folder.")
     test_dir = setup_test_dir()
     clean_test_flag = True
     o = RosbagHandler(test_dir)
-    o.convert_to_csv()
+
+    logger.info("Test invalid topic input.")
+    try:
+        o.get_csv_of_a_topic("thistopicdoesnotexist")
+    except TopicNotFoundInRosbag as e:
+        logger.info("passed.")
+    else:
+        logger.error("failed.")
+
+    logger.info("Test converting rosbag folder.")
+    o.get_csv_of_a_topic("/tag_multimodal")
     try:
         assert same_dir_test(test_dir, score_dir)
     except AssertionError as e:
@@ -96,7 +104,7 @@ if __name__ == '__main__':
     )
     for bag_file in list_of_bag_file:
         o = RosbagHandler(bag_file)
-        o.convert_to_csv()
+        o.get_csv_of_a_topic("/tag_multimodal")
         fname = os.path.basename(bag_file)[:-4]     # strip .bag
 
         test_bag_dir = os.path.join(test_dir, fname)

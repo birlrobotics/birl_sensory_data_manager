@@ -38,32 +38,17 @@ def message_type_to_csv(stream, msg, parent_content_name=""):
             message_type_to_csv(stream, val, ".".join([parent_content_name,s]))
     except:
         stream.write("," + parent_content_name)
-
-def format_csv_filename(form, topic_name):
-    global seq
-    if form==None:
-        return "Convertedbag.csv"
-    ret = form.replace('%t', topic_name)
-    return ret
  
-def bag_to_csv(output_file_format, fname):
-    bag = rosbag.Bag(fname)
+def bag_to_csv(bag, output_file_path, topic_name):
     streamdict= dict()
-    stime = None
-    etime = None
 
-    for topic, msg, time in bag.read_messages(topics=None,
-                                              start_time=stime,
-                                              end_time=etime):
+    for topic, msg, time in bag.read_messages(topics=topic_name,
+                                              start_time=None,
+                                              end_time=None):
         if streamdict.has_key(topic):
             stream = streamdict[topic]
         else:
-            stream = open(
-                format_csv_filename(
-                    output_file_format, 
-                    os.path.basename(fname)[:-4]+topic.replace('/','-')
-                ),
-                'w')
+            stream = open(output_file_path, 'w')
             streamdict[topic] = stream
             stream.write("time")
             message_type_to_csv(stream, msg)

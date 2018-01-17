@@ -1,7 +1,4 @@
-import glob, os
-import rosbag
-import pandas as pd
-from _rosbag_handler_impl.tuned_rosbag_to_csv import bag_to_csv
+import os
 
 class InvalidRosbagPath(Exception): pass
 class TopicNotFoundInRosbag(Exception): pass
@@ -47,6 +44,8 @@ class RosbagHandler(object):
     """
 
     def __init__(self, path_to_rosbag):
+        import glob
+
         if os.path.isdir(path_to_rosbag):
             _list_of_bag_paths = glob.glob(
                 os.path.join(
@@ -95,6 +94,11 @@ class RosbagHandler(object):
         Raises:
             TopicNotFoundInRosbag
         """
+
+        import rosbag
+        import pandas as pd
+        from _rosbag_handler_impl.tuned_rosbag_to_csv import bag_to_csv
+
         ret = []
         
         _list_of_bag_paths = self._list_of_bag_paths 

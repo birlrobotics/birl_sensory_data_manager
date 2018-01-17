@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""This is a module that handles rosbag.
+
+So far this module assumes its users are only 
+interested in extracting data from rosbag files 
+one topic at a time. The core API that provides
+this service is class RosbagHandler. Read the 
+examples in its documentation for more details.
+
+"""
+
 import os
 
 class InvalidRosbagPath(Exception): pass
@@ -11,8 +22,11 @@ class RosbagHandler(object):
     content in rosbag by topic and the result is
     stored as pandas Dataframe which represents a 
     CSV. To speed up repetitive processing, 
-    results will be automatically cached along 
-    side the corresponding rosbag files. 
+    results will be first stored alongside the 
+    corresponding rosbag files and be reused for 
+    future query. Therefore you must have write 
+    permission on the folder where the rosbag 
+    files reside. 
 
     Args:
         path_to_rosbag: A path to a rosbag file or 

@@ -90,9 +90,10 @@ class RosbagHandler(object):
         topic_name, 
         use_cached_result=True,
     ):
-        """Brief get_csv_of_a_topic.
+        """Get data of a topic as CSV.
         
-        Detailed get_csv_of_a_topic.
+        Note:
+            Th returning CSV exists as a pandas Dataframe.
 
         Args:
             topic_name (str): The name of the to-be-extracted 
@@ -112,6 +113,7 @@ class RosbagHandler(object):
         import rosbag
         import pandas as pd
         from _rosbag_handler_impl.tuned_rosbag_to_csv import bag_to_csv
+        import errno
 
         ret = []
         

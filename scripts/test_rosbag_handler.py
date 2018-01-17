@@ -82,6 +82,7 @@ if __name__ == '__main__':
 
     logger.info("Test converting rosbag folder.")
     o.get_csv_of_a_topic("/tag_multimodal")
+    o.get_csv_of_a_topic("/anomaly_detection_signal")
     try:
         assert same_dir_test(test_dir, score_dir)
     except AssertionError as e:
@@ -105,6 +106,7 @@ if __name__ == '__main__':
     for bag_file in list_of_bag_file:
         o = RosbagHandler(bag_file)
         o.get_csv_of_a_topic("/tag_multimodal")
+        o.get_csv_of_a_topic("/anomaly_detection_signal")
         fname = os.path.basename(bag_file)[:-4]     # strip .bag
 
         test_bag_dir = os.path.join(test_dir, fname)

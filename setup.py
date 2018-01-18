@@ -6,6 +6,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 setup_args = generate_distutils_setup(
     packages=[
         'birl_offline_data_handler',
+        'birl_offline_data_handler_test',
     ],
     package_dir={'': 'src'}
 )

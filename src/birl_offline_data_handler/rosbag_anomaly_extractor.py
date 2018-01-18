@@ -1,10 +1,31 @@
 # -*- coding: utf-8 -*-
+"""B
+
+D
+
+"""
+
+
 from rosbag_handler import RosbagHandler
 import os
 import glob
-import pandas as pd
 
 class RosbagAnomalyExtractor(RosbagHandler):
+    """B
+    
+    D
+
+    Args:
+        path_to_rosbag: *.
+        use_cached_result: *.
+        
+    Raises:
+        *
+
+    Examples:
+        *
+    """
+
     def __init__(self, path_to_rosbag, use_cached_result=True):
         super(RosbagAnomalyExtractor, self)\
             .__init__(path_to_rosbag, use_cached_result)
@@ -16,6 +37,22 @@ class RosbagAnomalyExtractor(RosbagHandler):
         anomaly_window_size_in_sec,
         anomaly_resample_hz,
     ):
+        """B
+        
+        D
+
+        Args:
+            data_topic_name: *.
+            anomaly_topic_name: *.
+            anomaly_window_size_in_sec: *.
+            anomaly_resample_hz: *.
+
+        Returns:
+            *
+
+        Examples:
+            *
+        """
         ret = []
 
         _list_of_bag_paths = self._list_of_bag_paths 
@@ -40,6 +77,8 @@ class RosbagAnomalyExtractor(RosbagHandler):
         anomaly_window_size_in_sec,
         anomaly_resample_hz,
     ):
+        import pandas as pd
+
         anomaly_csv_dir_path = self._get_anomaly_csv_dir_path(bag_path)
         cache_flag_path = os.path.join(anomaly_csv_dir_path, "SUCCESS")
         if self._use_cache and os.path.isfile(cache_flag_path):

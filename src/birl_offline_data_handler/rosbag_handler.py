@@ -22,8 +22,8 @@ class RosbagHandler(object):
     content in rosbag by topic and the result is
     stored as pandas Dataframe which represents a 
     CSV. To speed up repetitive processing, 
-    results will be first stored alongside the 
-    corresponding rosbag files and be reused for 
+    we will first store results alongside the 
+    corresponding rosbag files and reuse them in 
     future query. Therefore you must have write 
     permission on the folder where the rosbag 
     files reside. 

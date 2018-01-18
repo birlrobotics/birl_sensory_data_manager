@@ -1,17 +1,7 @@
 # -*- coding: utf-8 -*-
-"""B
-
-D
-
-"""
 from datetime import datetime
 
 class CsvHandler(object):
-    """B
-
-    D
-    """
-
     def __init__(self):
         pass
 
@@ -22,20 +12,6 @@ class CsvHandler(object):
         anomaly_window_size_in_sec,
         anomaly_resample_hz,
     ):
-        """B
-            
-        D
-        
-        Args:
-            data_df: *
-            anomaly_flag_df: *
-            anomaly_window_size_in_sec: *
-            anomaly_resample_hz: *
-
-        Examples:
-            *
-
-        """
         import numpy as np
 
         # process time

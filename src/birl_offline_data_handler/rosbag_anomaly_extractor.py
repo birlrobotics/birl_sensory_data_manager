@@ -22,11 +22,11 @@ class RosbagAnomalyExtractor(RosbagHandler):
     """To extract anomalies from rosbags.
     
     An instance of RosbagAnomalyExtractor helps you extract anomalies from one
-or more rosbag files. The rosbag files in question should contain a data topic
-and a flag topic. Messages of both topics should be timestamped. The messages of
-data topic contain data while the messages of flag topic indicate anomalous
-moments. The extracted anomalies are effectively subsets of the data topic
-collected according to the flag topic.
+    or more rosbag files. The rosbag files in question should contain a data topic
+    and a flag topic. Messages of both topics should be timestamped. The messages of
+    data topic contain data while the messages of flag topic indicate anomalous
+    moments. The extracted anomalies are effectively subsets of the data topic
+    collected according to the flag topic.
 
     Args:
         path_to_rosbag: A path to a rosbag file or 
@@ -84,21 +84,24 @@ collected according to the flag topic.
         anomaly_window_size_in_sec,
         anomaly_resample_hz,
     ):
-        """B
+        """Get anomaly data as CSV.
         
-        D
+        In order to extract messages from data topic and flag topic,
+        the user must provide their topic names. Besides, the length of an
+        anomaly, e.g. the windows size of an anomaly, should be specified.
+        Since the amount of timesteps of an anomaly may vary, we will resample
+        each anomaly so that they're of the same size. Thus the rate of
+        resampling should be specified too.
 
         Args:
-            data_topic_name: *.
-            anomaly_topic_name: *.
-            anomaly_window_size_in_sec: *.
-            anomaly_resample_hz: *.
+            data_topic_name (str): The name of data topic, i.e. "/tag_multimodal".
+            anomaly_topic_name: The name of flag topic, i.e. "anomaly_detection_signal".
+            anomaly_window_size_in_sec: Time length of an anomaly.
+            anomaly_resample_hz: Rate of resampling for anomaly data.
 
         Returns:
-            *
-
-        Examples:
-            *
+            A list of (bag path, x) tuples, where x is a list of 
+            (anomaly id, pandas.Dataframe) tuples. pandas.Dataframe represents a CSV.
         """
         ret = []
 

@@ -92,16 +92,14 @@ class RosbagHandler(object):
         topic_name, 
     ):
         """Get data of a topic as CSV.
-        
-        Note:
-            Th returning CSV exists as a pandas Dataframe.
 
         Args:
             topic_name (str): The name of the to-be-extracted 
                 topic. Don't forget the \"/\" if there is one.
  
         Returns:
-            A list of (bag path, csv dataframe) tuples.
+            A list of (bag path, pandas.Dataframe) tuples,
+            pandas.Dataframe represents a CSV.
 
         Raises:
             TopicNotFoundInRosbag

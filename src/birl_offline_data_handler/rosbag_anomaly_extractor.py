@@ -101,7 +101,7 @@ class RosbagAnomalyExtractor(RosbagHandler):
 
         Returns:
             A list of (bag path, x) tuples, where x is a list of 
-            (anomaly id, pandas.Dataframe) tuples. pandas.Dataframe represents a CSV.
+            (anomaly id, pandas.Dataframe) tuples. Here a pandas.Dataframe represents a CSV of anomaly data.
         """
         ret = []
 

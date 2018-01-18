@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
-"""B
+"""This is a module that extracts anomaly data from rosbag
 
-D
+This module holds two assumptions, one for rosbag files and one for anomaly
+extraction. For rosbag files, this module assumes there are one data topic and
+one flag topic in every rosbag file. And the message types of them both contain
+a std_msgs/Header field, which means every message sent to these two topics is
+timestamped. For anomaly extraction, this module assumes a message sent to the
+flag topic marks its sending moment anomalous, which means the timestamp of that
+message indicates an anomalous moment.  Therefore, to extract anomalies, we need
+to collect subsets of data topic messages based on the timestamps of flag topic
+messages.
 
 """
 
@@ -11,19 +19,58 @@ import os
 import glob
 
 class RosbagAnomalyExtractor(RosbagHandler):
-    """B
+    """To extract anomalies from rosbags.
     
-    D
+    An instance of RosbagAnomalyExtractor helps you extract anomalies from one
+or more rosbag files. The rosbag files in question should contain a data topic
+and a flag topic. Messages of both topics should be timestamped. The messages of
+data topic contain data while the messages of flag topic indicate anomalous
+moments. The extracted anomalies are effectively subsets of the data topic
+collected according to the flag topic.
 
     Args:
-        path_to_rosbag: *.
-        use_cached_result: *.
+        path_to_rosbag: A path to a rosbag file or 
+            a folder of rosbag files. In the latter 
+            case, all rosbag files in that folder
+            will be processed. 
+        use_cached_result (bool, optional): Default true. 
+            If ture, cached result will be used instead 
+            of reading and parsing the rosbag file again.
         
     Raises:
-        *
+        InvalidRosbagPath
 
     Examples:
-        *
+        To process a single rosbag file
+
+        >>> o = RosbagAnomalyExtractor("/path_to_data_set/s01.bag")
+        >>> o.get_anomaly_csv("/tag_multimodal", "/anomaly_detection_signal", 4, 10)
+        [
+            ("/path_to_data_set/s01.bag", [
+                (anomaly_id, pandas.DataFrame),
+                ...
+                (anomaly_id, pandas.DataFrame),
+            ])
+        ]
+
+        To process a folder of rosbag files
+
+        >>> o = RosbagAnomalyExtractor("/path_to_data_set")
+        >>> o.get_anomaly_csv("/tag_multimodal", "/anomaly_detection_signal", 4, 10)
+        [
+            ("/path_to_data_set/s01.bag", [
+                (anomaly_id, pandas.DataFrame),
+                ...
+                (anomaly_id, pandas.DataFrame),
+            ]),
+            ...
+            ("/path_to_data_set/s05.bag", [
+                (anomaly_id, pandas.DataFrame),
+                ...
+                (anomaly_id, pandas.DataFrame),
+            ])
+        ]
+
     """
 
     def __init__(self, path_to_rosbag, use_cached_result=True):

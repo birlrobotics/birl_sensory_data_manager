@@ -116,6 +116,8 @@ collected according to the flag topic.
                 ),
             ))
 
+        return ret
+
     def _get_anomaly_csv_of_one_bag(
         self, 
         bag_path,

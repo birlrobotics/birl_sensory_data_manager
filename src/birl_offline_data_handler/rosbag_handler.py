@@ -129,7 +129,7 @@ class RosbagHandler(object):
         available_topics = \
             bag.get_type_and_topic_info().topics.keys()
         if topic_name not in available_topics:
-            raise TopicNotFoundInRosbag()
+            raise TopicNotFoundInRosbag("topic name: %s"%topic_name)
 
         csv_path = self._get_csv_path(
             bag_path,

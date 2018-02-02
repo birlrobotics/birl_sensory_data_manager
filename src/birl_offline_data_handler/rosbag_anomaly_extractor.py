@@ -17,6 +17,7 @@ messages.
 from rosbag_handler import RosbagHandler
 import os
 import glob
+import re
 
 class RosbagAnomalyExtractor(RosbagHandler):
     """To extract anomalies from rosbags.
@@ -178,10 +179,14 @@ class RosbagAnomalyExtractor(RosbagHandler):
             tmp = open(cache_flag_path, "w")
             tmp.close() 
 
-        list_of_anomaly_csv_paths = glob.glob(os.path.join(
-            anomaly_csv_dir_path,
-            "*.csv"
-        ))
+        prog = re.compile(r'.*no_(\d+)_.*')
+        list_of_anomaly_csv_paths = sorted(
+            glob.glob(os.path.join(
+                anomaly_csv_dir_path,
+                "*.csv"
+            )),
+            key=lambda x: int(prog.match(x).group(1))
+        )
         ret = []
         for csv_path in list_of_anomaly_csv_paths:
             anomaly_id = os.path.basename(csv_path)[:-4]

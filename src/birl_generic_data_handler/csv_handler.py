@@ -95,6 +95,7 @@ class CsvHandler(object):
             )
             old_time_index = search_df.index
             resampled_anomaly_df = search_df\
+                .reset_index().drop_duplicates(subset='time').set_index('time')\
                 .reindex(old_time_index.union(new_time_index))\
                 .interpolate(method='linear', axis=0).ix[new_time_index]
             list_of_resampled_anomaly_df.append(resampled_anomaly_df)
